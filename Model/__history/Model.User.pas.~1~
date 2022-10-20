@@ -1,0 +1,30 @@
+unit Model.User;
+
+interface
+
+type
+  TUser = class
+  private
+    FID: Integer;
+    FUSER: string;
+    FPASSWORD: string;
+    FRULE: Integer;
+    procedure SetUser(const Value: string);
+    procedure SetId(const Value: Integer);
+    procedure SetPassword(const Value: string);
+    procedure SetRule(const Value: Integer);
+  public
+    property Id: Integer read FID write SetId;
+  end;
+
+implementation
+
+procedure TCliente.TUser(const Value: Integer);
+begin
+  FID := Value;
+end;
+
+
+
+
+end.

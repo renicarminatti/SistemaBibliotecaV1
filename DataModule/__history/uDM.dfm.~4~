@@ -1,0 +1,20 @@
+object DM: TDM
+  OldCreateOrder = False
+  Height = 512
+  Width = 574
+  object con: TFDConnection
+    Params.Strings = (
+      'Database=C:\#PCO\SistemaBiblioteca\Bin\DataDB\DB.FDB'
+      'User_Name=SYSDBA'
+      'Password=masterkey'
+      'DriverID=FB')
+    LoginPrompt = False
+    Left = 32
+    Top = 32
+  end
+  object FDPhysFBDriverLink1: TFDPhysFBDriverLink
+    VendorLib = 'C:\#PCO\SistemaBiblioteca\Bin\fbclient.dll'
+    Left = 152
+    Top = 24
+  end
+end

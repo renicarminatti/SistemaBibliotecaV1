@@ -1,0 +1,57 @@
+unit uLogin;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,
+  dxGDIPlusClasses, Controller.User, Model.User;
+
+type
+  TfLogin = class(TForm)
+    pnlAll: TPanel;
+    pnlDados: TPanel;
+    pnlTop: TPanel;
+    lblLogin: TLabel;
+    edtUser: TLabeledEdit;
+    edtPass: TLabeledEdit;
+    imglogo: TImage;
+    btnLogin: TSpeedButton;
+    btnClose: TSpeedButton;
+    procedure btnCloseClick(Sender: TObject);
+    procedure btnLoginClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    User : TUser;
+  end;
+
+var
+  fLogin: TfLogin;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfLogin.btnCloseClick(Sender: TObject);
+begin
+ Application.Terminate;
+end;
+
+procedure TfLogin.btnLoginClick(Sender: TObject);
+var
+ ControllerUser : TControllerUser;
+begin
+ User := TUser.Create;
+ ControllerUser := TControllerUser.Create;
+ try
+  ControllerUser.Login(edtUser.Text, edtPass.Text, User);
+  if User.Id <> 0 then Close;
+
+ finally
+  FreeAndNil(ControllerUser);
+ end;
+end;
+
+end.

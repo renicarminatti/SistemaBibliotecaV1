@@ -1,0 +1,89 @@
+unit uCadPadrao;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Buttons, Vcl.ComCtrls,
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls;
+
+type
+  TfCadPadrao = class(TForm)
+    pgc1: TPageControl;
+    tsLista: TTabSheet;
+    tsCad: TTabSheet;
+    dbgrdLista: TDBGrid;
+    pnlListaTop: TPanel;
+    btnNovo: TSpeedButton;
+    btEditar: TSpeedButton;
+    pnlCadTop: TPanel;
+    btnSalvar: TSpeedButton;
+    btnCancelar: TSpeedButton;
+    pnlTop: TPanel;
+    lblEntity: TLabel;
+    btnClose: TSpeedButton;
+    procedure FormCreate(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btEditarClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
+    procedure pnlTopMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fCadPadrao: TfCadPadrao;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfCadPadrao.btEditarClick(Sender: TObject);
+begin
+ pgc1.ActivePage := tsCad;
+end;
+
+procedure TfCadPadrao.btnCancelarClick(Sender: TObject);
+begin
+ pgc1.ActivePage := tsLista;
+end;
+
+procedure TfCadPadrao.btnCloseClick(Sender: TObject);
+begin
+ Close;
+end;
+
+procedure TfCadPadrao.btnNovoClick(Sender: TObject);
+begin
+ pgc1.ActivePage := tsCad;
+end;
+
+procedure TfCadPadrao.btnSalvarClick(Sender: TObject);
+begin
+ pgc1.ActivePage := tsLista;
+end;
+
+procedure TfCadPadrao.FormCreate(Sender: TObject);
+var
+    I : Integer;
+begin
+   for I := 0 to Pred(pgc1.PageCount) do
+       pgc1.Pages[I].TabVisible := False;
+   pgc1.ActivePage := tsLista;
+end;
+
+procedure TfCadPadrao.pnlTopMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+const
+   sc_DragMove = $f012;
+begin
+  ReleaseCapture;
+  Perform(wm_SysCommand, sc_DragMove, 0);
+end;
+
+end.

@@ -1,0 +1,72 @@
+unit uCadUser;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uCadPadrao, Data.DB, Vcl.StdCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  Controller.User, Model.User;
+
+type
+  TfCadUser = class(TfCadPadrao)
+    qrylistId: TFDAutoIncField;
+    qrylistLogin: TStringField;
+    edtUser: TLabeledEdit;
+    edtUser1: TLabeledEdit;
+    LabeledEdit1: TLabeledEdit;
+    lblPerfil: TLabel;
+    cbb1: TComboBox;
+    procedure btnCloseClick(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+  private
+    { Private declarations }
+    vAction : string;
+  public
+    { Public declarations }
+  end;
+
+var
+  fCadUser: TfCadUser;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfCadUser.btnCloseClick(Sender: TObject);
+begin
+  Close;
+  inherited;
+end;
+
+procedure TfCadUser.btnNovoClick(Sender: TObject);
+begin
+  inherited;
+  vAction := 'NOVO';
+end;
+
+procedure TfCadUser.btnSalvarClick(Sender: TObject);
+var
+ Controller : TControllerUser;
+ User : TUser;
+begin
+  inherited;
+  Controller := TControllerUser.Create;
+  User := TUser.Create;
+  try
+  if vAction = 'NOVO' then
+   begin
+     user
+     Controller.NovoUsuario(User);
+   end;
+  finally
+    FreeAndNil(Controller);
+    FreeAndNil(User);
+  end;
+end;
+
+end.
