@@ -10,13 +10,12 @@ type
 
   public
     procedure Login(vUser: String; vPassword: String; mUser: TUser) overload;
-    procedure NovoUsuario(mUser: TUser) overload;
-    procedure EditarUsuario(mUser: TUser) overload;
+    procedure Novo(mUser: TUser) overload;
+    procedure Editar(mUser: TUser) overload;
   end;
 
 implementation
 
-{ TcontroladorCliente }
 
 procedure TControllerUser.Login(vUser: String; vPassword: String; mUser: TUser);
 var
@@ -67,7 +66,7 @@ begin
   end;
 end;
 
-procedure TControllerUser.NovoUsuario( mUser: TUser);
+procedure TControllerUser.Novo( mUser: TUser);
 var
   Erro: string;
   Query: TFDQuery;
@@ -131,7 +130,7 @@ begin
   end;
 end;
 
-procedure TControllerUser.EditarUsuario( mUser: TUser);
+procedure TControllerUser.Editar( mUser: TUser);
 var
   Erro: string;
   Query: TFDQuery;
@@ -169,7 +168,7 @@ begin
       SQL.Add('  UPDATE USER                 ');
       SQL.Add('     SET                      ');
       SQL.Add('     USER = :USER,            ');
-      SQL.Add('     PASSWORD = :PASSWORD     ');
+      SQL.Add('     PASSWORD = :PASSWORD,     ');
       SQL.Add('     ROLE = :ROLE             ');
       SQL.Add('     WHERE ID = :ID;           ');
       ParamByName('ID').AsInteger := mUser.Id;

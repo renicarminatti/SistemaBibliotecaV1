@@ -11,8 +11,8 @@ object fLogin: TfLogin
   Font.Charset = DEFAULT_CHARSET
   Font.Color = 4737096
   Font.Height = -11
-  Font.Name = 'Tahoma'
-  Font.Style = []
+  Font.Name = 'Segoe UI'
+  Font.Style = [fsBold]
   OldCreateOrder = False
   DesignSize = (
     649
@@ -1314,6 +1314,7 @@ object fLogin: TfLogin
         EditLabel.Font.Style = [fsBold]
         EditLabel.ParentFont = False
         TabOrder = 0
+        Text = 'ADM'
         OnKeyPress = edtUserKeyPress
       end
       object edtPass: TLabeledEdit
@@ -1332,6 +1333,7 @@ object fLogin: TfLogin
         EditLabel.ParentFont = False
         PasswordChar = '*'
         TabOrder = 1
+        Text = '102030'
         OnKeyPress = edtPassKeyPress
       end
     end

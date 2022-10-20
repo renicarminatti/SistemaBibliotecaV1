@@ -3,8 +3,8 @@ object fCadPadrao: TfCadPadrao
   Top = 0
   BorderStyle = bsNone
   Caption = 'fCadPadrao'
-  ClientHeight = 419
-  ClientWidth = 651
+  ClientHeight = 577
+  ClientWidth = 854
   Color = 2565927
   Font.Charset = DEFAULT_CHARSET
   Font.Color = 4737096
@@ -21,20 +21,22 @@ object fCadPadrao: TfCadPadrao
     AlignWithMargins = True
     Left = 3
     Top = 28
-    Width = 645
-    Height = 388
+    Width = 848
+    Height = 546
     ActivePage = tsLista
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 645
+    ExplicitHeight = 388
     object tsLista: TTabSheet
       Caption = 'tsLista'
-      ExplicitWidth = 643
-      ExplicitHeight = 391
+      ExplicitWidth = 637
+      ExplicitHeight = 360
       object dbgrdLista: TDBGrid
         Left = 0
         Top = 33
-        Width = 637
-        Height = 327
+        Width = 840
+        Height = 485
         Align = alClient
         BorderStyle = bsNone
         DataSource = dsList
@@ -50,15 +52,14 @@ object fCadPadrao: TfCadPadrao
       object pnlListaTop: TPanel
         Left = 0
         Top = 0
-        Width = 637
+        Width = 840
         Height = 33
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitTop = -6
-        ExplicitWidth = 643
+        ExplicitWidth = 637
         object btnNovo: TSpeedButton
-          Left = 437
+          Left = 640
           Top = 0
           Width = 100
           Height = 33
@@ -69,7 +70,7 @@ object fCadPadrao: TfCadPadrao
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Segoe UI'
-          Font.Style = []
+          Font.Style = [fsBold]
           Glyph.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000000000000000000000000000000000000000000000000
@@ -114,7 +115,7 @@ object fCadPadrao: TfCadPadrao
           ExplicitHeight = 25
         end
         object btEditar: TSpeedButton
-          Left = 537
+          Left = 740
           Top = 0
           Width = 100
           Height = 33
@@ -125,7 +126,7 @@ object fCadPadrao: TfCadPadrao
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Segoe UI'
-          Font.Style = []
+          Font.Style = [fsBold]
           Glyph.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000000000000000000000000000000000000000000000000
@@ -174,22 +175,16 @@ object fCadPadrao: TfCadPadrao
     object tsCad: TTabSheet
       Caption = 'tsCad'
       ImageIndex = 1
-      ExplicitLeft = 8
-      ExplicitTop = 28
-      ExplicitWidth = 643
-      ExplicitHeight = 391
       object pnlCadTop: TPanel
         Left = 0
         Top = 0
-        Width = 637
+        Width = 840
         Height = 33
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitTop = 8
-        ExplicitWidth = 643
         object btnSalvar: TSpeedButton
-          Left = 437
+          Left = 640
           Top = 0
           Width = 100
           Height = 33
@@ -200,7 +195,7 @@ object fCadPadrao: TfCadPadrao
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Segoe UI'
-          Font.Style = []
+          Font.Style = [fsBold]
           Glyph.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000000000000000000000000000000000000000000000000
@@ -245,7 +240,7 @@ object fCadPadrao: TfCadPadrao
           ExplicitHeight = 25
         end
         object btnCancelar: TSpeedButton
-          Left = 537
+          Left = 740
           Top = 0
           Width = 100
           Height = 33
@@ -256,7 +251,7 @@ object fCadPadrao: TfCadPadrao
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Segoe UI'
-          Font.Style = []
+          Font.Style = [fsBold]
           Glyph.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000000000000000000000000000000000000000000000000
@@ -306,13 +301,13 @@ object fCadPadrao: TfCadPadrao
   object pnlTop: TPanel
     Left = 0
     Top = 0
-    Width = 651
+    Width = 854
     Height = 25
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
     OnMouseDown = pnlTopMouseDown
-    ExplicitTop = -3
+    ExplicitWidth = 651
     object lblEntity: TLabel
       AlignWithMargins = True
       Left = 3
@@ -335,7 +330,7 @@ object fCadPadrao: TfCadPadrao
     end
     object btnClose: TSpeedButton
       AlignWithMargins = True
-      Left = 632
+      Left = 835
       Top = 5
       Width = 16
       Height = 15
@@ -382,6 +377,7 @@ object fCadPadrao: TfCadPadrao
       ParentShowHint = False
       ShowHint = True
       OnClick = btnCloseClick
+      ExplicitLeft = 632
     end
   end
   object qrylist: TFDQuery
@@ -393,5 +389,14 @@ object fCadPadrao: TfCadPadrao
     DataSet = qrylist
     Left = 504
     Top = 280
+  end
+  object actlstView: TActionList
+    Left = 504
+    Top = 344
+    object actClose: TAction
+      Caption = 'actClose'
+      ShortCut = 27
+      OnExecute = actCloseExecute
+    end
   end
 end

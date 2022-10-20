@@ -127,6 +127,35 @@
             <Form>fCadUser</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="View\uCadLibrarian.pas">
+            <Form>fCadLibrarian</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Controller\Controller.Librarian.pas"/>
+        <DCCReference Include="Controller\Controller.Student.pas"/>
+        <DCCReference Include="Controller\Controller.Book.pas"/>
+        <DCCReference Include="Controller\Controller.Loan.pas"/>
+        <DCCReference Include="Model\Model.Loan.pas"/>
+        <DCCReference Include="View\uCadStudent.pas">
+            <Form>fCadStudent</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="View\uCadBook.pas">
+            <Form>fCadBook</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="View\uConfig.pas">
+            <Form>fConfig</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Model\Model.Config.pas">
+            <ContainerId>ConfigurationCompiler</ContainerId>
+        </DCCReference>
+        <DCCReference Include="Controller\Controller.Config.pas"/>
+        <DCCReference Include="View\uMovimento.pas">
+            <Form>fMovimento</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

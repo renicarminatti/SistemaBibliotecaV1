@@ -9,7 +9,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  Controller.User, Model.User;
+  Controller.User, Model.User, System.Actions, Vcl.ActnList;
 
 type
   TfCadUser = class(TfCadPadrao)
@@ -56,15 +56,18 @@ end;
 procedure TfCadUser.btnNovoClick(Sender: TObject);
 begin
   inherited;
+  edtId.Clear;
+  edtUser.Clear;
+  edtPassword.Clear;
   vAction := 'NOVO';
 end;
 
 procedure TfCadUser.btnSalvarClick(Sender: TObject);
 var
- Controller : TControllerUser;
+ ControllerUser : TControllerUser;
  User : TUser;
 begin
-  Controller := TControllerUser.Create;
+  ControllerUser := TControllerUser.Create;
   User := TUser.Create;
   try
     if vAction = 'NOVO' then
@@ -72,8 +75,7 @@ begin
        user.User := edtUser.Text;
        User.Password := edtPassword.Text;
        User.Role := cbbPerfil.ItemIndex;
-       Controller.NovoUsuario(User);
-       qrylist.Refresh;
+       ControllerUser.Novo(User);
      end;
     if vAction = 'EDITAR' then
      begin
@@ -81,12 +83,12 @@ begin
        user.User := edtUser.Text;
        User.Password := edtPassword.Text;
        User.Role := cbbPerfil.ItemIndex;
-       Controller.EditarUsuario(User);
-       qrylist.Refresh;
+       ControllerUser.Editar(User);
      end;
+     qrylist.Refresh;
      inherited;
   finally
-    FreeAndNil(Controller);
+    FreeAndNil(ControllerUser);
     FreeAndNil(User);
   end;
 end;

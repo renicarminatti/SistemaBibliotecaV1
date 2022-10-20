@@ -1,0 +1,130 @@
+unit Controller.Book;
+
+interface
+
+uses Model.Book, uDM, SysUtils, Data.DB, FireDAC.Comp.Client, Vcl.Dialogs;
+
+type
+  TControllerBook = class
+  private
+
+  public
+
+    procedure Novo(mBook: TBook) overload;
+    procedure Editar(mBook: TBook) overload;
+  end;
+
+implementation
+
+{ TcontroladorCliente }
+
+
+
+procedure TControllerBook.Novo( mBook: TBook);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    if Trim(mBook.Name) = '' then
+    begin
+      MessageDlg('Campo nome é obrigatório!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    if Length(mBook.Name) < 4 then
+    begin
+      MessageDlg('Nome deve ter no minimo 4 caractéres!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add(' INSERT INTO BOOK (           ');
+      SQL.Add('     NAME,                    ');
+      SQL.Add('     AUTHOR,                  ');
+      SQL.Add('     PUBLISHER,               ');
+      SQL.Add('     GENRE                    ');
+      SQL.Add('      ) VALUES (              ');
+      SQL.Add('       :NAME,                 ');
+      SQL.Add('       :AUTHOR,               ');
+      SQL.Add('       :PUBLISHER,            ');
+      SQL.Add('       :GENRE                 ');
+      SQL.Add(');                            ');
+      ParamByName('NAME').AsString := mBook.Name;
+      ParamByName('AUTHOR').AsString := mBook.Author;
+      ParamByName('PUBLISHER').AsString := mBook.Publisher;
+      ParamByName('GENRE').AsString := mBook.Genre;
+    end;
+    try
+      Query.ExecSQL;
+      MessageDlg('Gravado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+      except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao gravar livro ';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerBook.Editar( mBook: TBook);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    if Trim(mBook.Name) = '' then
+    begin
+      MessageDlg('Campo nome é obrigatório!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    if Length(mBook.Name) < 4 then
+    begin
+      MessageDlg('Nome deve ter no minimo 4 caractéres!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  UPDATE BOOK                      ');
+      SQL.Add('     SET                           ');
+      SQL.Add('     NAME = :NAME,                 ');
+      SQL.Add('     AUTHOR = :AUTHOR,             ');
+      SQL.Add('     PUBLISHER = :PUBLISHER,       ');
+      SQL.Add('     GENRE = :GENRE                ');
+      SQL.Add('     WHERE ID = :ID;               ');
+      ParamByName('ID').AsInteger := mBook.Id;
+      ParamByName('NAME').AsString := mBook.Name;
+      ParamByName('AUTHOR').AsString := mBook.Author;
+      ParamByName('PUBLISHER').AsString := mBook.Publisher;
+      ParamByName('GENRE').AsString := mBook.Genre;
+    end;
+    try
+      Query.ExecSQL;
+      MessageDlg('Editado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha ao editar livro ';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+end.

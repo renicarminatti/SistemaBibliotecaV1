@@ -1,0 +1,92 @@
+unit uCadStudent;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uCadPadrao, Data.DB, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.StdCtrls, Vcl.Buttons,
+  Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Controller.Student, Model.Student;
+
+type
+  TfCadStudent = class(TfCadPadrao)
+    qrylistID: TFDAutoIncField;
+    qrylistNAME: TStringField;
+    qrylistBIRTHDADE: TDateField;
+    qrylistCLASS: TStringField;
+    qrylistENABLED: TBooleanField;
+    edtId: TLabeledEdit;
+    edtName: TLabeledEdit;
+    lblPerfil: TLabel;
+    dtpBirthDate: TDateTimePicker;
+    edtClass: TLabeledEdit;
+    chkEnabled: TCheckBox;
+    procedure btnNovoClick(Sender: TObject);
+    procedure btEditarClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+  private
+    { Private declarations }
+    vAction : string;
+  public
+    { Public declarations }
+  end;
+
+var
+  fCadStudent: TfCadStudent;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfCadStudent.btEditarClick(Sender: TObject);
+begin
+  inherited;
+  vAction := 'EDITAR';
+  edtId.Text := qrylistId.AsString;
+  dtpBirthDate.date := qrylistBIRTHDADE.Value;
+  edtClass.Text := qrylistCLASS.AsString;
+  chkEnabled.Checked := qrylistENABLED.Value;
+end;
+
+procedure TfCadStudent.btnNovoClick(Sender: TObject);
+begin
+  inherited;
+  dtpBirthDate.Date := Now;
+  vAction := 'NOVO';
+end;
+
+procedure TfCadStudent.btnSalvarClick(Sender: TObject);
+var
+ ControllerUser : TControllerUser;
+ User : TUser;
+begin
+  ControllerUser := TControllerUser.Create;
+  User := TUser.Create;
+  try
+    if vAction = 'NOVO' then
+     begin
+       user.User := edtUser.Text;
+       User.Password := edtPassword.Text;
+       User.Role := cbbPerfil.ItemIndex;
+       ControllerUser.Novo(User);
+     end;
+    if vAction = 'EDITAR' then
+     begin
+       User.Id := qrylistId.Value;
+       user.User := edtUser.Text;
+       User.Password := edtPassword.Text;
+       User.Role := cbbPerfil.ItemIndex;
+       ControllerUser.Editar(User);
+     end;
+     qrylist.Refresh;
+     inherited;
+  finally
+    FreeAndNil(ControllerUser);
+    FreeAndNil(User);
+  end;
+
+end;
+
+end.

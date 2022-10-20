@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,
-  dxGDIPlusClasses, Controller.User, Model.User;
+  dxGDIPlusClasses, Controller.User, Controller.Config, Model.Config, Model.User;
 
 type
   TfLogin = class(TForm)
@@ -45,18 +45,24 @@ end;
 
 procedure TfLogin.btnLoginClick(Sender: TObject);
 var
- ControllerUser : TControllerUser;
- User : TUser;
+ ControllerUser      : TControllerUser;
+ ControllerConfig    : TControllerConfig;
 begin
- ControllerUser := TControllerUser.Create;
- User := TUser.Create;
+ ControllerUser      := TControllerUser.Create;
+ ControllerConfig    := TControllerConfig.Create;
+ fMain.Config              := TConfig.create;
+ fMain.User                := TUser.Create;
  try
-  ControllerUser.Login(edtUser.Text, edtPass.Text, User);
-  if User.Id <> 0 then Close;
-  fMain.User := User;
+  ControllerUser.Login(edtUser.Text, edtPass.Text, fMain.User);
+  if fMain.User.Id <> 0 then
+  begin
+   ControllerConfig.CarregaConfig(fMain.Config);
+
+   Close;
+  end;
  finally
   FreeAndNil(ControllerUser);
-  FreeAndNil(User);
+  FreeAndNil(ControllerConfig);
  end;
 end;
 

@@ -1,0 +1,106 @@
+unit Controller.Config;
+
+interface
+
+uses Model.Config, uDM, SysUtils, Data.DB, FireDAC.Comp.Client, Vcl.Dialogs;
+
+type
+  TControllerConfig = class
+  private
+
+  public
+    procedure CarregaConfig(mConfig: TConfig) overload;
+    procedure EditaConfig(mConfig: TConfig) overload;
+  end;
+
+implementation
+
+{ TcontroladorCliente }
+
+procedure TControllerConfig.CarregaConfig(mConfig: TConfig);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Clear;
+      SQL.Add('          SELECT * FROM                ');
+      SQL.Add('           CONFIG                      ');
+    end;
+    try
+     Query.Open;
+      if Query.RecordCount = 1 then
+      begin
+        mConfig.Id := Query.FieldByName('ID').AsInteger;
+        mConfig.MaxBookStudent := Query.FieldByName('MAX_BOOK_STUDENT').AsInteger;
+        mConfig.Delay := Query.FieldByName('DELAY_FINE').AsFloat;
+      end
+       else
+        begin
+          MessageDlg('Não foi possivel carregar a Configuração!', mtWarning, [mbOK], 0, mbOK);
+        end;
+
+      except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao Carregar Usuário ';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+
+
+procedure TControllerConfig.EditaConfig( mConfig: TConfig);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    if mConfig.MaxBookStudent < 0 then
+    begin
+      MessageDlg('Campo Maximo de livros deve ser maior ou igual a 1!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  UPDATE CONFIG                               ');
+      SQL.Add('     SET                                      ');
+      SQL.Add('     MAX_BOOK_STUDENT = :MAX_BOOK_STUDENT,    ');
+      SQL.Add('     DELAY_FINE = :DELAY_FINE                 ');
+      SQL.Add('     WHERE ID = :ID;                          ');
+      ParamByName('ID').AsInteger := mConfig.Id;
+      ParamByName('MAX_BOOK_STUDENT').AsString := mConfig.MaxBookStudent;
+      ParamByName('DELAY_FINE').AsFloat := mConfig.Delay;
+    end;
+    try
+      Query.ExecSQL;
+      MessageDlg('Editado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+      except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao editar Configurações ';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+end.

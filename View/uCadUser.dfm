@@ -3,9 +3,12 @@ inherited fCadUser: TfCadUser
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgc1: TPageControl
+    ActivePage = tsCad
+    ExplicitWidth = 848
+    ExplicitHeight = 546
     inherited tsLista: TTabSheet
-      ExplicitWidth = 637
-      ExplicitHeight = 360
+      ExplicitWidth = 840
+      ExplicitHeight = 518
       inherited dbgrdLista: TDBGrid
         Columns = <
           item
@@ -17,19 +20,15 @@ inherited fCadUser: TfCadUser
           item
             Expanded = False
             FieldName = 'Login'
-            Width = 555
+            Width = 758
             Visible = True
           end>
       end
       inherited pnlListaTop: TPanel
-        ExplicitWidth = 637
+        ExplicitWidth = 840
       end
     end
     inherited tsCad: TTabSheet
-      ExplicitLeft = 0
-      ExplicitTop = 24
-      ExplicitWidth = 637
-      ExplicitHeight = 360
       object lblPerfil: TLabel [0]
         Left = 16
         Top = 139
@@ -42,10 +41,6 @@ inherited fCadUser: TfCadUser
         Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
         ParentFont = False
-      end
-      inherited pnlCadTop: TPanel
-        ExplicitTop = 0
-        ExplicitWidth = 637
       end
       object edtId: TLabeledEdit
         Left = 16
@@ -140,7 +135,7 @@ inherited fCadUser: TfCadUser
     end
   end
   inherited pnlTop: TPanel
-    ExplicitTop = 0
+    ExplicitWidth = 854
     inherited lblEntity: TLabel
       Width = 130
       Caption = 'Cadastro de Usu'#225'rios'

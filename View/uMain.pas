@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
-  Vcl.Buttons, Vcl.ExtCtrls, Vcl.StdCtrls, Model.User, dxGDIPlusClasses;
+  Vcl.Buttons, Vcl.ExtCtrls, Vcl.StdCtrls, Model.User, dxGDIPlusClasses, Model.Config;
 
 type
   TfMain = class(TForm)
@@ -27,6 +27,9 @@ type
     btnLivro: TSpeedButton;
     btnEmprestimo: TSpeedButton;
     imglogo: TImage;
+    btnConfig: TSpeedButton;
+    pnlSubMenuConfig: TPanel;
+    btnConfig1: TSpeedButton;
     procedure btnMenuClick(Sender: TObject);
     procedure btnMaxClick(Sender: TObject);
     procedure btnMovimentoClick(Sender: TObject);
@@ -42,6 +45,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure pnlTopMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure btnConfigClick(Sender: TObject);
+    procedure btnConfig1Click(Sender: TObject);
   private
     procedure SetLayout;
     procedure EscondeSubMenus;
@@ -49,6 +54,7 @@ type
   public
     { Public declarations }
     User : TUser;
+    Config : TConfig;
   end;
 
 var
@@ -59,39 +65,54 @@ var
 implementation
 
 uses
-  uLogin, uCadUser;
+  uLogin, uCadUser, uCadLibrarian, uCadStudent, uCadBook, uConfig, uMovimento;
 
 {$R *.dfm}
 
 procedure TfMain.btnAlunoClick(Sender: TObject);
 begin
  EscondeSubMenus;
-
+ if fCadStudent = nil then
+ begin
+   fCadStudent := TfCadStudent.Create(Self);
+   fCadStudent.ShowModal;
+   FreeAndNil(fCadStudent);
+ end;
 end;
 
 procedure TfMain.btnBlibliotecarioClick(Sender: TObject);
 begin
  EscondeSubMenus;
-
+ if fCadLibrarian = nil then
+ begin
+   fCadLibrarian := TfCadLibrarian.Create(Self);
+   fCadLibrarian.ShowModal;
+   FreeAndNil(fCadLibrarian);
+ end;
 end;
 
 procedure TfMain.btnCadastrosClick(Sender: TObject);
 begin
- pnlSubMenuCadastro.Left     := 0;
- pnlSubMenuCadastro.Visible  := not pnlSubMenuCadastro.Visible;
- pnlSubMenuMovimento.Visible := False;
+ pnlSubMenuCadastro.Visible   := not pnlSubMenuCadastro.Visible;
+ pnlSubMenuMovimento.Visible  := False;
+ pnlSubMenuConfig.Visible     := False;
 end;
 
 procedure TfMain.SetLayout;
 begin
-  pnlSubMenuMovimento.Top := btnMovimento.Top;
-  pnlSubMenuCadastro.Top := btnCadastros.Top;
+  pnlSubMenuMovimento.Top     := btnMovimento.Top;
+  pnlSubMenuMovimento.Left    := 0;
+  pnlSubMenuCadastro.Top      := btnCadastros.Top;
+  pnlSubMenuCadastro.Left     := 0;
+  pnlSubMenuConfig.Top        := btnConfig.Top;
+  pnlSubMenuConfig.Left       := 0;
 end;
 
 procedure TfMain.EscondeSubMenus;
 begin
-  pnlSubMenuMovimento.Visible := False;
-  pnlSubMenuCadastro.Visible := False;
+  pnlSubMenuMovimento.Visible   := False;
+  pnlSubMenuCadastro.Visible    := False;
+  pnlSubMenuConfig.Visible      := False;
 end;
 
 procedure TfMain.btnCloseClick(Sender: TObject);
@@ -99,16 +120,44 @@ begin
  Close;
 end;
 
+procedure TfMain.btnConfig1Click(Sender: TObject);
+begin
+ EscondeSubMenus;
+  if fConfig = nil then
+ begin
+   fConfig := TfConfig.Create(Self);
+   fConfig.ShowModal;
+   FreeAndNil(fConfig);
+ end;
+end;
+
+procedure TfMain.btnConfigClick(Sender: TObject);
+begin
+ pnlSubMenuConfig.Visible     := not pnlSubMenuConfig.Visible;
+ pnlSubMenuMovimento.Visible  := False;
+ pnlSubMenuCadastro.Visible   := False;
+end;
+
 procedure TfMain.btnEmprestimoClick(Sender: TObject);
 begin
- User := TUser.Create;
  EscondeSubMenus;
+ if fMovimento = nil then
+ begin
+   fMovimento := TfMovimento.Create(Self);
+   fMovimento.ShowModal;
+   FreeAndNil(fMovimento);
+ end;
 end;
 
 procedure TfMain.btnLivroClick(Sender: TObject);
 begin
  EscondeSubMenus;
-
+ if fCadBook = nil then
+ begin
+   fCadBook := TfCadBook.Create(Self);
+   fCadBook.ShowModal;
+   FreeAndNil(fCadBook);
+ end;
 end;
 
 procedure TfMain.btnMaxClick(Sender: TObject);
@@ -122,14 +171,14 @@ begin
   pnlMenu.Width := 140
   else
   pnlMenu.Width := 51;
- mExpandido := not mExpandido;
+ mExpandido     := not mExpandido;
 end;
 
 procedure TfMain.btnMovimentoClick(Sender: TObject);
 begin
- pnlSubMenuMovimento.Left    := 0;
- pnlSubMenuMovimento.Visible := not pnlSubMenuMovimento.Visible;
- pnlSubMenuCadastro.Visible := False;
+ pnlSubMenuMovimento.Visible  := not pnlSubMenuMovimento.Visible;
+ pnlSubMenuCadastro.Visible   := False;
+ pnlSubMenuConfig.Visible     := False;
 end;
 
 procedure TfMain.btnUsuarioClick(Sender: TObject);

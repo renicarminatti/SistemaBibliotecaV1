@@ -8,7 +8,7 @@ uses
   Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, System.Actions, Vcl.ActnList;
 
 type
   TfCadPadrao = class(TForm)
@@ -27,6 +27,8 @@ type
     btnClose: TSpeedButton;
     qrylist: TFDQuery;
     dsList: TDataSource;
+    actlstView: TActionList;
+    actClose: TAction;
     procedure FormCreate(Sender: TObject);
     procedure btnNovoClick(Sender: TObject);
     procedure btEditarClick(Sender: TObject);
@@ -36,6 +38,7 @@ type
     procedure pnlTopMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormShow(Sender: TObject);
+    procedure actCloseExecute(Sender: TObject);
   private
     procedure LimparEdits;
     { Private declarations }
@@ -52,6 +55,11 @@ uses
   uDM, uMain;
 
 {$R *.dfm}
+
+procedure TfCadPadrao.actCloseExecute(Sender: TObject);
+begin
+  Close;
+end;
 
 procedure TfCadPadrao.btEditarClick(Sender: TObject);
 begin

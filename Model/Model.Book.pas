@@ -10,17 +10,20 @@ type
     FAUTHOR: string;
     FPUBLISHER: string;
     FGENRE: string;
+    FAVAILABLE: Boolean;
     procedure SetId(const Value: Integer);
     procedure SetName(const Value: string);
     procedure SetAuthor(const Value: string);
     procedure SetPublisher(const Value: string);
     procedure SetGenre(const Value: string);
+    procedure SetAvailable(const Value: Boolean);
   public
     property Id: Integer read FID write SetId;
     property Name: string read FNAME write SetName;
     property Author: string read FAUTHOR write SetAuthor;
     property Publisher: string read FPUBLISHER write SetPublisher;
     property Genre: string read FGENRE write SetGenre;
+    property Available: Boolean read FAVAILABLE write SetAvailable;
   end;
 
 implementation
@@ -48,6 +51,11 @@ end;
 procedure TBook.SetGenre(const Value: string);
 begin
   FGENRE := Value;
+end;
+
+procedure TBook.SetAvailable(const Value: Boolean);
+begin
+  FAVAILABLE := Value;
 end;
 
 end.

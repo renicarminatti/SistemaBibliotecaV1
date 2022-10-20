@@ -1,0 +1,202 @@
+inherited fCadStudent: TfCadStudent
+  Caption = 'fCadStudent'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pgc1: TPageControl
+    ActivePage = tsCad
+    inherited tsLista: TTabSheet
+      inherited dbgrdLista: TDBGrid
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'ID'
+            Width = 60
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'NAME'
+            Title.Caption = 'Nome'
+            Width = 288
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'BIRTHDATE'
+            Title.Caption = 'Nascimento'
+            Width = 107
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'AGE'
+            Title.Caption = 'Idade'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CLASS'
+            Title.Caption = 'Turma'
+            Width = 118
+            Visible = True
+          end>
+      end
+    end
+    inherited tsCad: TTabSheet
+      ExplicitLeft = 20
+      ExplicitTop = 32
+      ExplicitWidth = 637
+      ExplicitHeight = 360
+      object lblPerfil: TLabel [0]
+        Left = 16
+        Top = 99
+        Width = 87
+        Height = 13
+        Caption = 'Data nascimento'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = 4737096
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      inherited pnlCadTop: TPanel
+        ExplicitTop = 0
+        ExplicitWidth = 637
+      end
+      object edtId: TLabeledEdit
+        Left = 16
+        Top = 32
+        Width = 209
+        Height = 21
+        CharCase = ecUpperCase
+        EditLabel.Width = 10
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Id'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = 4737096
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 1
+      end
+      object edtName: TLabeledEdit
+        Left = 16
+        Top = 72
+        Width = 209
+        Height = 21
+        CharCase = ecUpperCase
+        EditLabel.Width = 32
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Nome'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = 4737096
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+      end
+      object dtpBirthDate: TDateTimePicker
+        Left = 16
+        Top = 115
+        Width = 209
+        Height = 21
+        Date = 44854.000000000000000000
+        Time = 0.542549826386675700
+        TabOrder = 3
+      end
+      object edtClass: TLabeledEdit
+        Left = 16
+        Top = 157
+        Width = 209
+        Height = 21
+        CharCase = ecUpperCase
+        EditLabel.Width = 32
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Turma'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = 4737096
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 4
+      end
+      object chkEnabled: TCheckBox
+        Left = 16
+        Top = 184
+        Width = 97
+        Height = 17
+        Caption = 'Cadastro Ativo'
+        TabOrder = 5
+      end
+    end
+  end
+  inherited pnlTop: TPanel
+    inherited lblEntity: TLabel
+      Height = 25
+    end
+  end
+  inherited qrylist: TFDQuery
+    SQL.Strings = (
+      'select '
+      ' *,'
+      
+        ' Trunc((SELECT julianday('#39'now'#39') - julianday(BIRTHDATE))/365.24) ' +
+        'as AGE'
+      ' '
+      ' from student')
+    object qrylistID: TFDAutoIncField
+      FieldName = 'ID'
+      Origin = 'ID'
+      ProviderFlags = [pfInWhere, pfInKey]
+    end
+    object qrylistNAME: TStringField
+      FieldName = 'NAME'
+      Origin = 'NAME'
+      Required = True
+      Size = 32767
+    end
+    object qrylistCLASS: TStringField
+      FieldName = 'CLASS'
+      Origin = 'CLASS'
+      Size = 32767
+    end
+    object qrylistENABLED: TBooleanField
+      FieldName = 'ENABLED'
+      Origin = 'ENABLED'
+    end
+    object qrylistBIRTHDATE: TDateField
+      FieldName = 'BIRTHDATE'
+      Origin = 'BIRTHDATE'
+    end
+    object qrylistAGE: TFloatField
+      AutoGenerateValue = arDefault
+      FieldName = 'AGE'
+      Origin = 'AGE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+  end
+end
