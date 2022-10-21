@@ -1374,4 +1374,13 @@ object fLogin: TfLogin
       end
     end
   end
+  object actlst1: TActionList
+    Left = 592
+    Top = 24
+    object actClose: TAction
+      Caption = 'actClose'
+      ShortCut = 32883
+      OnExecute = actCloseExecute
+    end
+  end
 end

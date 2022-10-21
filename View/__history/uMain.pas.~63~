@@ -1,0 +1,242 @@
+unit uMain;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
+  Vcl.Buttons, Vcl.ExtCtrls, Vcl.StdCtrls, Model.User, dxGDIPlusClasses, Model.Config;
+
+type
+  TfMain = class(TForm)
+    pnlMenu: TPanel;
+    pnlAll: TPanel;
+    btnCadastros: TSpeedButton;
+    btnMenu: TSpeedButton;
+    btnMovimento: TSpeedButton;
+    pnlDiv1: TPanel;
+    pnlTop: TPanel;
+    lblEntity: TLabel;
+    pnlSubMenuMovimento: TPanel;
+    pnlSubMenuCadastro: TPanel;
+    btnClose: TSpeedButton;
+    btnMax: TSpeedButton;
+    btnAluno: TSpeedButton;
+    btnBlibliotecario: TSpeedButton;
+    btnUsuario: TSpeedButton;
+    btnLivro: TSpeedButton;
+    btnEmprestimo: TSpeedButton;
+    imglogo: TImage;
+    btnConfig: TSpeedButton;
+    pnlSubMenuConfig: TPanel;
+    btnConfig1: TSpeedButton;
+    procedure btnMenuClick(Sender: TObject);
+    procedure btnMaxClick(Sender: TObject);
+    procedure btnMovimentoClick(Sender: TObject);
+    procedure pnlAllMouseEnter(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btnCadastrosClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
+    procedure btnUsuarioClick(Sender: TObject);
+    procedure btnBlibliotecarioClick(Sender: TObject);
+    procedure btnAlunoClick(Sender: TObject);
+    procedure btnLivroClick(Sender: TObject);
+    procedure btnEmprestimoClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure pnlTopMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure btnConfigClick(Sender: TObject);
+    procedure btnConfig1Click(Sender: TObject);
+  private
+    procedure SetLayout;
+    procedure EscondeSubMenus;
+    { Private declarations }
+  public
+    { Public declarations }
+    User : TUser;
+    Config : TConfig;
+  end;
+
+var
+  fMain: TfMain;
+  mExpandido : Boolean;
+
+
+implementation
+
+uses
+  uLogin, uCadUser, uCadLibrarian, uCadStudent, uCadBook, uConfig, uMovimento;
+
+{$R *.dfm}
+
+procedure TfMain.btnAlunoClick(Sender: TObject);
+begin
+ EscondeSubMenus;
+ if fCadStudent = nil then
+ begin
+   fCadStudent := TfCadStudent.Create(Self);
+   fCadStudent.ShowModal;
+   FreeAndNil(fCadStudent);
+ end;
+end;
+
+procedure TfMain.btnBlibliotecarioClick(Sender: TObject);
+begin
+ EscondeSubMenus;
+ if fCadLibrarian = nil then
+ begin
+   fCadLibrarian := TfCadLibrarian.Create(Self);
+   fCadLibrarian.ShowModal;
+   FreeAndNil(fCadLibrarian);
+ end;
+end;
+
+procedure TfMain.btnCadastrosClick(Sender: TObject);
+begin
+ pnlSubMenuCadastro.Visible   := not pnlSubMenuCadastro.Visible;
+ pnlSubMenuMovimento.Visible  := False;
+ pnlSubMenuConfig.Visible     := False;
+end;
+
+procedure TfMain.SetLayout;
+begin
+  pnlSubMenuMovimento.Top     := btnMovimento.Top;
+  pnlSubMenuMovimento.Left    := 0;
+  pnlSubMenuCadastro.Top      := btnCadastros.Top;
+  pnlSubMenuCadastro.Left     := 0;
+  pnlSubMenuConfig.Top        := btnConfig.Top;
+  pnlSubMenuConfig.Left       := 0;
+end;
+
+procedure TfMain.EscondeSubMenus;
+begin
+  pnlSubMenuMovimento.Visible   := False;
+  pnlSubMenuCadastro.Visible    := False;
+  pnlSubMenuConfig.Visible      := False;
+end;
+
+procedure TfMain.btnCloseClick(Sender: TObject);
+begin
+ Close;
+end;
+
+procedure TfMain.btnConfig1Click(Sender: TObject);
+begin
+ EscondeSubMenus;
+  if fConfig = nil then
+ begin
+   fConfig := TfConfig.Create(Self);
+   fConfig.ShowModal;
+   FreeAndNil(fConfig);
+ end;
+end;
+
+procedure TfMain.btnConfigClick(Sender: TObject);
+begin
+ pnlSubMenuConfig.Visible     := not pnlSubMenuConfig.Visible;
+ pnlSubMenuMovimento.Visible  := False;
+ pnlSubMenuCadastro.Visible   := False;
+end;
+
+procedure TfMain.btnEmprestimoClick(Sender: TObject);
+begin
+ EscondeSubMenus;
+ if fMovimento = nil then
+ begin
+   fMovimento := TfMovimento.Create(Self);
+   if User.Role = 2 then
+   begin
+     fMovimento.pnlFuncoes.Visible := False;
+   end;
+   fMovimento.ShowModal;
+   FreeAndNil(fMovimento);
+ end;
+end;
+
+procedure TfMain.btnLivroClick(Sender: TObject);
+begin
+ EscondeSubMenus;
+ if fCadBook = nil then
+ begin
+   fCadBook := TfCadBook.Create(Self);
+   fCadBook.ShowModal;
+   FreeAndNil(fCadBook);
+ end;
+end;
+
+procedure TfMain.btnMaxClick(Sender: TObject);
+begin
+ WindowState := wsMaximized;
+end;
+
+procedure TfMain.btnMenuClick(Sender: TObject);
+begin
+ if mExpandido then
+  pnlMenu.Width := 140
+  else
+  pnlMenu.Width := 51;
+ mExpandido     := not mExpandido;
+end;
+
+procedure TfMain.btnMovimentoClick(Sender: TObject);
+begin
+ pnlSubMenuMovimento.Top      := btnMovimento.Top;
+ pnlSubMenuMovimento.Visible  := not pnlSubMenuMovimento.Visible;
+ pnlSubMenuCadastro.Visible   := False;
+ pnlSubMenuConfig.Visible     := False;
+end;
+
+procedure TfMain.btnUsuarioClick(Sender: TObject);
+begin
+ EscondeSubMenus;
+ if fCadUser = nil then
+ begin
+   fCadUser := TfCadUser.Create(Self);
+   fCadUser.ShowModal;
+   FreeAndNil(fCadUser);
+ end;
+end;
+
+procedure TfMain.FormCreate(Sender: TObject);
+begin
+  SetLayout;
+end;
+
+procedure TfMain.FormShow(Sender: TObject);
+begin
+  if fLogin = nil then
+  begin
+    fLogin := TfLogin.Create(Self);
+    fLogin.ShowModal;
+  end;
+
+  //operador
+  if User.role = 1 then
+   begin
+     btnUsuario.Visible := False;
+   end;
+
+   //Aluno
+  if User.role = 2 then
+   begin
+     btnCadastros.Visible := False;
+     btnConfig.Visible := False;
+   end;
+end;
+
+procedure TfMain.pnlAllMouseEnter(Sender: TObject);
+begin
+  EscondeSubMenus;
+end;
+
+procedure TfMain.pnlTopMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+const
+   sc_DragMove = $f012;
+begin
+  ReleaseCapture;
+  Perform(wm_SysCommand, sc_DragMove, 0);
+
+end;
+
+end.

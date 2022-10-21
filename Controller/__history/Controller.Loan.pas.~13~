@@ -1,0 +1,175 @@
+unit Controller.Loan;
+
+interface
+
+uses Model.Loan, uDM, SysUtils, Data.DB, FireDAC.Comp.Client, Vcl.Dialogs;
+
+type
+  TControllerLoan = class
+  private
+
+  public
+    procedure Novo(mLoan: TLoan) overload;
+    procedure Editar(mLoan: TLoan) overload;
+    procedure Baixa(id:Integer) overload;
+    procedure Detalhes(id:Integer; Student:String; DateReturn:string) overload;
+  end;
+
+implementation
+
+
+procedure TControllerLoan.Novo( mLoan: TLoan);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add(' INSERT INTO LOAN (           ');
+      SQL.Add('     DATE,                    ');
+      SQL.Add('     STUDENT_ID,              ');
+      SQL.Add('     BOOK_ID,                 ');
+      SQL.Add('     DATE_RETURN              ');
+      SQL.Add('      ) VALUES (              ');
+      SQL.Add('       :DATE,                 ');
+      SQL.Add('       :STUDENT_ID,           ');
+      SQL.Add('       :BOOK_ID,              ');
+      SQL.Add('       :DATE_RETURN               ');
+      SQL.Add(');                            ');
+      ParamByName('DATE').AsDate := mLoan.Date;
+      ParamByName('STUDENT_ID').AsInteger := mLoan.StudentId;
+      ParamByName('BOOK_ID').AsInteger := mLoan.BookId;
+      ParamByName('DATE_RETURN').AsDate := mLoan.DateReturn;
+    end;
+    try
+      Query.ExecSQL;
+      MessageDlg('Gravado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+      except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao gravar emprestimo ';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerLoan.Editar( mLoan: TLoan);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  UPDATE LOAN                      ');
+      SQL.Add('     SET                           ');
+      SQL.Add('     DATE = :DATE,                 ');
+      SQL.Add('     STUDENT_ID = :STUDENT_ID,             ');
+      SQL.Add('     BOOK_ID = :BOOK_ID           ');
+      SQL.Add('     WHERE ID = :ID;               ');
+      ParamByName('ID').AsInteger := mLoan.Id;
+      ParamByName('DATE').AsDate := mLoan.Date;
+      ParamByName('STUDENT_ID').AsInteger := mLoan.StudentId;
+      ParamByName('BOOK_ID').AsInteger := mLoan.BookId;
+    end;
+    try
+      Query.ExecSQL;
+      MessageDlg('Editado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha ao editar emprestimo ';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerLoan.Baixa(Id:Integer);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  UPDATE LOAN                      ');
+      SQL.Add('     SET                           ');
+      SQL.Add('     RETURN = 1                 ');
+      SQL.Add('     WHERE ID = :ID;               ');
+      ParamByName('ID').AsInteger := Id;
+    end;
+    try
+      Query.ExecSQL;
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha ao editar emprestimo ';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerLoan.Detalhes(id:Integer; Student:String; DateReturn: string);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  SELECT                                     ');
+      SQL.Add('     STUDENT.NAME,                           ');
+      SQL.Add('     LOAN.DATE_RETURN                        ');
+      SQL.Add('     FROM LOAN                               ');
+      SQL.Add('     INNER JOIN STUDENT                      ');
+      SQL.Add('     ON (LOAN.STUDENT_ID=STUDENT.ID)          ');
+      SQL.Add('     WHERE LOAN.ID = :ID                    ');
+      SQL.Add('     AND LOAN.RETURN = 0                    ');
+      ParamByName('ID').AsInteger := Id;
+    end;
+    try
+      Query.Open();
+      Student := Query.FieldByName('NAME').AsString;
+      DateReturn := Query.FieldByName('DATE_RETURN').AsString;
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha ao editar emprestimo ';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+end.

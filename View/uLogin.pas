@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,
-  dxGDIPlusClasses, Controller.User, Controller.Config, Model.Config, Model.User;
+  dxGDIPlusClasses, Controller.User, Controller.Config, Model.Config, Model.User,
+  System.Actions, Vcl.ActnList;
 
 type
   TfLogin = class(TForm)
@@ -18,10 +19,13 @@ type
     imglogo: TImage;
     btnLogin: TSpeedButton;
     btnClose: TSpeedButton;
+    actlst1: TActionList;
+    actClose: TAction;
     procedure btnCloseClick(Sender: TObject);
     procedure btnLoginClick(Sender: TObject);
     procedure edtPassKeyPress(Sender: TObject; var Key: Char);
     procedure edtUserKeyPress(Sender: TObject; var Key: Char);
+    procedure actCloseExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -38,9 +42,15 @@ uses
 
 {$R *.dfm}
 
+procedure TfLogin.actCloseExecute(Sender: TObject);
+begin
+ Close;
+ fMain.Close;
+end;
+
 procedure TfLogin.btnCloseClick(Sender: TObject);
 begin
- Application.Terminate;
+actClose.Execute;
 end;
 
 procedure TfLogin.btnLoginClick(Sender: TObject);

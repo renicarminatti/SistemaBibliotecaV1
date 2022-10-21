@@ -41,9 +41,9 @@ implementation
 procedure TfCadUser.btEditarClick(Sender: TObject);
 begin
   inherited;
-  vAction := 'EDITAR';
-  edtId.Text := qrylistId.AsString;
-  edtUser.Text := qrylistLogin.Value;
+  vAction            := 'EDITAR';
+  edtId.Text         := qrylistId.AsString;
+  edtUser.Text       := qrylistLogin.Value;
   edtPassword.Clear;
 end;
 
@@ -72,17 +72,17 @@ begin
   try
     if vAction = 'NOVO' then
      begin
-       user.User := edtUser.Text;
-       User.Password := edtPassword.Text;
-       User.Role := cbbPerfil.ItemIndex;
+       user.User         := edtUser.Text;
+       User.Password     := edtPassword.Text;
+       User.Role         := cbbPerfil.ItemIndex;
        ControllerUser.Novo(User);
      end;
     if vAction = 'EDITAR' then
      begin
-       User.Id := qrylistId.Value;
-       user.User := edtUser.Text;
-       User.Password := edtPassword.Text;
-       User.Role := cbbPerfil.ItemIndex;
+       User.Id           := qrylistId.Value;
+       user.User         := edtUser.Text;
+       User.Password     := edtPassword.Text;
+       User.Role         := cbbPerfil.ItemIndex;
        ControllerUser.Editar(User);
      end;
      qrylist.Refresh;

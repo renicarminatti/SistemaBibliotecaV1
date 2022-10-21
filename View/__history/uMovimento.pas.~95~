@@ -1,0 +1,375 @@
+unit uMovimento;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons,
+  Data.DB, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Datasnap.DBClient, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, Controller.Student, Model.Student,Controller.Book, Model.Book,
+  Controller.Loan, Model.Loan, Vcl.ComCtrls;
+
+type
+  TfMovimento = class(TForm)
+    pnlAll: TPanel;
+    edtFAluno: TLabeledEdit;
+    pnlTop: TPanel;
+    lblEntity: TLabel;
+    btnClose: TSpeedButton;
+    btnFAluno: TSpeedButton;
+    dbgrdFAluno: TDBGrid;
+    qryFAluno: TFDQuery;
+    dsFAluno: TDataSource;
+    qryFAlunoID: TFDAutoIncField;
+    qryFAlunoNAME: TStringField;
+    dbgrdLoanList: TDBGrid;
+    dsLoan: TDataSource;
+    qryLoan: TFDQuery;
+    qryLoanid: TIntegerField;
+    qryLoanDATE: TDateField;
+    qryLoanDATE_RETURN: TDateField;
+    qryLoanNAME: TStringField;
+    qryLoanAUTHOR: TStringField;
+    edtFBook: TLabeledEdit;
+    btnFBook: TSpeedButton;
+    qryFBook: TFDQuery;
+    dsBook: TDataSource;
+    pnlFuncoes: TPanel;
+    qryFBookID: TFDAutoIncField;
+    qryFBookNAME: TStringField;
+    qryFBookAUTHOR: TStringField;
+    qryFBookPUBLISHER: TStringField;
+    qryFBookGENRE: TStringField;
+    qryFBookAVAILABLE: TBooleanField;
+    pnlDevolucao: TPanel;
+    pnlRetirada: TPanel;
+    btnDevolucao: TSpeedButton;
+    btnRetirada: TSpeedButton;
+    lblDatadevolucao: TLabel;
+    dtpDataDevolucao: TDateTimePicker;
+    qryLoanBOOK_ID: TIntegerField;
+    pnlIncrementDate: TPanel;
+    btnADD5: TSpeedButton;
+    btnADD30: TSpeedButton;
+    btnADD10: TSpeedButton;
+    btnADD20: TSpeedButton;
+    edtMulta: TLabeledEdit;
+    cbbMulta: TComboBox;
+    lblMulta: TLabel;
+    pnlLivroAll: TPanel;
+    pnlLivroDetalhe: TPanel;
+    dbgrdBookList: TDBGrid;
+    lblDetalhe: TLabel;
+    procedure btnCloseClick(Sender: TObject);
+    procedure btnFAlunoClick(Sender: TObject);
+    procedure edtFAlunoKeyPress(Sender: TObject; var Key: Char);
+    procedure dbgrdFAlunoCellClick(Column: TColumn);
+    procedure dbgrdLoanListCellClick(Column: TColumn);
+    procedure dbgrdBookListCellClick(Column: TColumn);
+    procedure edtFBookKeyPress(Sender: TObject; var Key: Char);
+    procedure btnFBookClick(Sender: TObject);
+    procedure btnRetiradaClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure dbgrdBookListDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure btnDevolucaoClick(Sender: TObject);
+    procedure btnADD5Click(Sender: TObject);
+    procedure btnADD10Click(Sender: TObject);
+    procedure btnADD20Click(Sender: TObject);
+    procedure btnADD30Click(Sender: TObject);
+    procedure dbgrdLoanListDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure cbbMultaChange(Sender: TObject);
+  private
+    procedure Emprestimo;
+    procedure CalculaMulta;
+    procedure SetPerfil(ControllerLoan: TControllerLoan);
+    { Private declarations }
+  public
+    { Public declarations }
+    Studend : TStudent;
+    vStudentLock : Boolean;
+  end;
+
+var
+  fMovimento: TfMovimento;
+
+implementation
+
+uses
+  uDM, uMain;
+
+{$R *.dfm}
+
+procedure TfMovimento.btnADD10Click(Sender: TObject);
+begin
+ dtpDataDevolucao.Date := dtpDataDevolucao.Date + 10;
+end;
+
+procedure TfMovimento.btnADD20Click(Sender: TObject);
+begin
+ dtpDataDevolucao.Date := dtpDataDevolucao.Date + 20;
+end;
+
+procedure TfMovimento.btnADD30Click(Sender: TObject);
+begin
+ dtpDataDevolucao.Date := dtpDataDevolucao.Date + 30;
+end;
+
+procedure TfMovimento.btnADD5Click(Sender: TObject);
+begin
+ dtpDataDevolucao.Date := dtpDataDevolucao.Date + 5;
+end;
+
+procedure TfMovimento.btnCloseClick(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TfMovimento.btnDevolucaoClick(Sender: TObject);
+var
+ ControllerLoan : TControllerLoan;
+ ControllerBook : TControllerBook;
+begin
+  try
+    ControllerLoan := TControllerLoan.Create;
+    ControllerBook := TControllerBook.Create;
+    ControllerLoan.Baixa(qryLoanid.AsInteger);
+    ControllerBook.SetAvailable(true,qryLoanBOOK_ID.AsInteger);
+    qryLoan.Refresh;
+    if qryFBook.Active =True then
+     qryFBook.Refresh;
+    pnlRetirada.Visible := False;
+  finally
+    FreeAndNil(ControllerLoan);
+    FreeAndNil(ControllerBook);
+  end;
+end;
+
+
+procedure TfMovimento.btnFAlunoClick(Sender: TObject);
+begin
+ With qryFAluno do
+  begin
+    Close;
+    SQL.Clear;;
+    SQL.Add('SELECT');
+    SQL.Add('ID,');
+    SQL.Add('NAME');
+    SQL.Add('FROM');
+    SQL.Add('STUDENT');
+    if Trim(edtFAluno.Text) <> '' then
+    begin
+      SQL.Add('WHERE');
+      SQL.Add('NAME LIKE :NAME');
+      ParamByName('NAME').AsString := '%'+edtFAluno.Text+'%';
+    end;
+    Open();
+    dbgrdFAluno.Height := 200;
+    dbgrdFAluno.Visible := True;
+  end;
+
+end;
+
+procedure TfMovimento.btnFBookClick(Sender: TObject);
+begin
+ With qryFBook do
+  begin
+    Close;
+    SQL.Clear;;
+    SQL.Add('SELECT');
+    SQL.Add('*');
+    SQL.Add('FROM');
+    SQL.Add('BOOK');
+    if Trim(edtFBook.Text) <> '' then
+    begin
+      SQL.Add('WHERE');
+      SQL.Add('NAME LIKE :NAME');
+      ParamByName('NAME').AsString := '%'+edtFBook.Text+'%';
+    end;
+    Open();
+  end;
+end;
+
+procedure TfMovimento.btnRetiradaClick(Sender: TObject);
+begin
+  if qryLoan.RecordCount >= fMain.Config.MaxBookStudent then
+  begin
+    MessageDlg('Aluno atingiu o máximo de emprestimos simultaneos!', mtConfirmation, [mbOK], 0, mbOK);
+    Abort;
+  end;
+
+  if vStudentLock = true then
+  begin
+    if MessageDlg
+      ('Aluno esta com bloqueio por atrazo, deseja realizar o emprestimo?',
+      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      Emprestimo;
+    end
+    else
+    begin
+      Abort;
+    end;
+  end;
+  if vStudentLock = False then
+  begin
+    Emprestimo;
+  end;
+
+
+end;
+
+procedure TfMovimento.dbgrdBookListCellClick(Column: TColumn);
+var
+ ControllerLoan : TControllerLoan;
+ DataRetorno, Aluno : string;
+begin
+ if qryFBookAVAILABLE.Value = False then
+ begin
+   ControllerLoan := TControllerLoan.Create;
+   try
+    SetPerfil(ControllerLoan);
+
+    pnlLivroDetalhe.Visible := True;
+   finally
+    FreeAndNil(ControllerLoan);
+   end;
+ end
+  else pnlLivroDetalhe.Visible := False;
+
+ pnlRetirada.Visible := True;
+ pnlDevolucao.Visible := False;
+end;
+
+procedure TfMovimento.dbgrdBookListDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+ If qryFBookAVAILABLE.Value = False then
+    dbgrdBookList.Canvas.Font.Color:= clRed;
+     dbgrdBookList.DefaultDrawDataCell(Rect, dbgrdBookList.columns[datacol].field, State);
+end;
+
+procedure TfMovimento.dbgrdFAlunoCellClick(Column: TColumn);
+var
+ ControllerStudent : TControllerStudend;
+begin
+ vStudentLock := False;
+ ControllerStudent := TControllerStudend.Create;
+ if Studend <> nil then FreeAndNil(Studend);
+ Studend := TStudent.Create;
+ Studend.Id := 0;
+ try
+  ControllerStudent.LocalizarPorId(qryFAlunoID.AsInteger, Studend);
+   edtFAluno.Text := Studend.Name;
+    dbgrdFAluno.Visible := False;
+     if Studend.Id <> 0 then
+      begin
+        qryLoan.Close;
+        qryLoan.ParamByName('student_id').AsInteger := Studend.Id;
+        qryLoan.Open();
+      end;
+ finally
+  FreeAndNil(ControllerStudent);
+ end;
+
+end;
+
+procedure TfMovimento.dbgrdLoanListCellClick(Column: TColumn);
+begin
+ pnlRetirada.Visible := False;
+ pnlDevolucao.Visible := True;
+  CalculaMulta;
+end;
+
+procedure TfMovimento.dbgrdLoanListDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  If  Date > qryLoanDATE_RETURN.Value then
+  begin
+   dbgrdLoanList.Canvas.Font.Color:= clRed;
+   vStudentLock := True;
+   dbgrdLoanList.DefaultDrawDataCell(Rect, dbgrdLoanList.columns[datacol].field, State);
+  end;
+
+end;
+
+procedure TfMovimento.Emprestimo;
+var
+  ControllerLoan: TControllerLoan;
+  ControllerBook: TControllerBook;
+  Loan: TLoan;
+  Book: TBook;
+begin
+  try
+    ControllerLoan := TControllerLoan.Create;
+    ControllerBook := TControllerBook.Create;
+    Loan := TLoan.Create;
+    Book := TBook.Create;
+    ControllerBook.LocalizarPorId(qryFBookID.AsInteger, Book);
+    if Book.Available = False then
+    begin
+      MessageDlg('Este Livro já está emprestado!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+    Loan.Date := Now;
+    Loan.StudentId := Studend.Id;
+    Loan.BookId := qryFBookID.AsInteger;
+    Loan.DateReturn := dtpDataDevolucao.Date;
+    ControllerLoan.Novo(Loan);
+    ControllerBook.SetAvailable(False, Loan.BookId);
+    qryLoan.Refresh;
+    qryFBook.Refresh;
+    pnlRetirada.Visible := False;
+  finally
+    FreeAndNil(ControllerLoan);
+    FreeAndNil(ControllerBook);
+    FreeAndNil(Loan);
+    FreeAndNil(Book);
+  end;
+end;
+
+procedure TfMovimento.CalculaMulta;
+var
+  DiasAtraso: Integer;
+begin
+  DiasAtraso := Trunc(Date - qryLoanDATE_RETURN.Value);
+  if cbbMulta.ItemIndex = 0 then
+  begin
+  edtMulta.Text := FormatFloat('R$ #,##0.00', (DiasAtraso * fMain.Config.Delay));
+  end;
+  if cbbMulta.ItemIndex = 1 then
+  begin
+  edtMulta.Text := FormatFloat('R$ #,##0.00', (fMain.Config.Delay));
+  end;
+end;
+
+procedure TfMovimento.SetPerfil(ControllerLoan: TControllerLoan);
+begin
+
+end;
+
+procedure TfMovimento.cbbMultaChange(Sender: TObject);
+begin
+ CalculaMulta;
+end;
+
+procedure TfMovimento.edtFAlunoKeyPress(Sender: TObject; var Key: Char);
+begin
+ if Key = #13 then btnFAluno.Click;
+
+end;
+
+procedure TfMovimento.edtFBookKeyPress(Sender: TObject; var Key: Char);
+begin
+ if Key = #13 then btnFBook.Click;
+end;
+
+procedure TfMovimento.FormCreate(Sender: TObject);
+begin
+ dtpDataDevolucao.Date := Now;
+end;
+
+end.

@@ -43,10 +43,10 @@ begin
      Query.Open;
       if Query.RecordCount = 1 then
       begin
-        mUser.Id := Query.FieldByName('ID').AsInteger;;
-        mUser.User := Query.FieldByName('USER').AsString;
-        mUser.Password := Query.FieldByName('PASSWORD').AsString;
-        mUser.Role := Query.FieldByName('ROLE').AsInteger;
+        mUser.Id            := Query.FieldByName('ID').AsInteger;;
+        mUser.User          := Query.FieldByName('USER').AsString;
+        mUser.Password      := Query.FieldByName('PASSWORD').AsString;
+        mUser.Role          := Query.FieldByName('ROLE').AsInteger;
       end
        else
         begin
@@ -110,9 +110,9 @@ begin
       SQL.Add('       :PASSWORD,        ');
       SQL.Add('       :ROLE             ');
       SQL.Add(');                       ');
-      ParamByName('USER').AsString := mUser.User;
-      ParamByName('PASSWORD').AsString := mUser.Password;
-      ParamByName('ROLE').AsInteger := mUser.Role;
+      ParamByName('USER').AsString        := mUser.User;
+      ParamByName('PASSWORD').AsString    := mUser.Password;
+      ParamByName('ROLE').AsInteger       := mUser.Role;
     end;
     try
       Query.ExecSQL;
@@ -171,10 +171,10 @@ begin
       SQL.Add('     PASSWORD = :PASSWORD,     ');
       SQL.Add('     ROLE = :ROLE             ');
       SQL.Add('     WHERE ID = :ID;           ');
-      ParamByName('ID').AsInteger := mUser.Id;
-      ParamByName('USER').AsString := mUser.User;
-      ParamByName('PASSWORD').AsString := mUser.Password;
-      ParamByName('ROLE').AsInteger := mUser.Role;
+      ParamByName('ID').AsInteger         := mUser.Id;
+      ParamByName('USER').AsString        := mUser.User;
+      ParamByName('PASSWORD').AsString    := mUser.Password;
+      ParamByName('ROLE').AsInteger       := mUser.Role;
     end;
     try
       Query.ExecSQL;

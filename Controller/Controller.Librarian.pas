@@ -61,9 +61,9 @@ begin
       SQL.Add('       :DOCUMENT,             ');
       SQL.Add('       :ADDRESS               ');
       SQL.Add(');                            ');
-      ParamByName('NAME').AsString := mLibrarian.Name;
-      ParamByName('DOCUMENT').AsString := mLibrarian.Document;
-      ParamByName('ADDRESS').AsString := mLibrarian.Address;
+      ParamByName('NAME').AsString      := mLibrarian.Name;
+      ParamByName('DOCUMENT').AsString  := mLibrarian.Document;
+      ParamByName('ADDRESS').AsString   := mLibrarian.Address;
     end;
     try
       Query.ExecSQL;
@@ -122,10 +122,10 @@ begin
       SQL.Add('     DOCUMENT = :DOCUMENT,          ');
       SQL.Add('     ADDRESS = :ADDRESS            ');
       SQL.Add('     WHERE ID = :ID;               ');
-      ParamByName('ID').AsInteger := mLibrarian.Id;
-      ParamByName('NAME').AsString := mLibrarian.Name;
-      ParamByName('DOCUMENT').AsString := mLibrarian.Document;
-      ParamByName('ADDRESS').AsString := mLibrarian.Address;
+      ParamByName('ID').AsInteger         := mLibrarian.Id;
+      ParamByName('NAME').AsString        := mLibrarian.Name;
+      ParamByName('DOCUMENT').AsString    := mLibrarian.Document;
+      ParamByName('ADDRESS').AsString     := mLibrarian.Address;
     end;
     try
       Query.ExecSQL;

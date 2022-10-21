@@ -32,8 +32,6 @@ object fMain: TfMain
     ParentFont = False
     TabOrder = 0
     OnMouseEnter = pnlAllMouseEnter
-    ExplicitLeft = 140
-    ExplicitWidth = 884
     object imglogo: TImage
       Left = 0
       Top = 40
@@ -182,7 +180,6 @@ object fMain: TfMain
       ParentBackground = False
       TabOrder = 0
       OnMouseDown = pnlTopMouseDown
-      ExplicitWidth = 884
       object lblEntity: TLabel
         AlignWithMargins = True
         Left = 10
@@ -1147,7 +1144,6 @@ object fMain: TfMain
       BevelOuter = bvNone
       ParentBackground = False
       TabOrder = 0
-      ExplicitWidth = 140
     end
   end
 end

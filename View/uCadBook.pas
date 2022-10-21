@@ -46,12 +46,12 @@ implementation
 procedure TfCadBook.btEditarClick(Sender: TObject);
 begin
   inherited;
-  edtId.text := qrylistID.AsString;
-  edtName.text := qrylistNAME.AsString;
-  edtAuthor.text := qrylistAUTHOR.AsString;
-  edtPublisher.text := qrylistPUBLISHER.AsString;
-  edtGenre.text := qrylistGENRE.AsString;
-  vAction := 'EDITAR';
+  edtId.text         := qrylistID.AsString;
+  edtName.text       := qrylistNAME.AsString;
+  edtAuthor.text     := qrylistAUTHOR.AsString;
+  edtPublisher.text  := qrylistPUBLISHER.AsString;
+  edtGenre.text      := qrylistGENRE.AsString;
+  vAction            := 'EDITAR';
 end;
 
 procedure TfCadBook.btnNovoClick(Sender: TObject);
@@ -77,19 +77,19 @@ begin
   try
     if vAction = 'NOVO' then
      begin
-       Book.Name := edtName.Text;
-       Book.Author := edtAuthor.Text;
-       Book.Publisher := edtPublisher.Text;
-       Book.Genre := edtGenre.Text;
+       Book.Name        := edtName.Text;
+       Book.Author      := edtAuthor.Text;
+       Book.Publisher   := edtPublisher.Text;
+       Book.Genre       := edtGenre.Text;
        ControllerBook.Novo(Book);
      end;
     if vAction = 'EDITAR' then
      begin
-       Book.Id := qrylistId.Value;
-       Book.Name := edtName.Text;
-       Book.Author := edtAuthor.Text;
-       Book.Publisher := edtPublisher.Text;
-       Book.Genre := edtGenre.Text;
+       Book.Id          := qrylistId.Value;
+       Book.Name        := edtName.Text;
+       Book.Author      := edtAuthor.Text;
+       Book.Publisher   := edtPublisher.Text;
+       Book.Genre       := edtGenre.Text;
        ControllerBook.Editar(Book);
      end;
      qrylist.Refresh;
@@ -106,7 +106,7 @@ procedure TfCadBook.dbgrdListaDrawColumnCell(Sender: TObject; const Rect: TRect;
 begin
   inherited;
   If qrylistAVAILABLE.Value = False then
-    dbgrdLista.Canvas.Font.Color:= clRed;
+    dbgrdLista.Canvas.Font.Color := clRed;
      dbgrdLista.DefaultDrawDataCell(Rect, dbgrdLista.columns[datacol].field, State);
 end;
 

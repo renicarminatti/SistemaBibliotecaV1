@@ -20,6 +20,7 @@ type
     procedure btnSalvarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure edtDelayKeyPress(Sender: TObject; var Key: Char);
+    procedure edtMaxKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
   public
@@ -48,8 +49,8 @@ begin
   ControllerConfig := TControllerConfig.Create;
 
   try
-   fMain.Config.MaxBookStudent := StrToInt(edtMax.Text);
-   fMain.Config.Delay := StrToFloat(edtDelay.Text);
+   fMain.Config.MaxBookStudent     := StrToInt(edtMax.Text);
+   fMain.Config.Delay              := StrToFloat(edtDelay.Text);
    ControllerConfig.EditaConfig(fMain.Config);
    Close;
   finally
@@ -59,19 +60,24 @@ end;
 
 procedure TfConfig.edtDelayKeyPress(Sender: TObject; var Key: Char);
 begin
- if  (key in ['.']) then key := #44;
- if not (key in ['0'..'9',',',#8]) then key :=#0;
+ if  (key in ['.']) then key                   := #44;
+ if not (key in ['0'..'9',',',#8]) then key    :=#0;
+end;
+
+procedure TfConfig.edtMaxKeyPress(Sender: TObject; var Key: Char);
+begin
+if not (key in ['0'..'9']) then key    :=#0;
 end;
 
 procedure TfConfig.FormCreate(Sender: TObject);
 var
  ControllerConfig : TControllerConfig;
 begin
-  ControllerConfig := TControllerConfig.Create;
+  ControllerConfig     := TControllerConfig.Create;
 
   try
-   edtMax.Text := IntToStr(fMain.Config.MaxBookStudent);
-   edtDelay.Text := FloatToStr(fMain.Config.Delay);
+   edtMax.Text         := IntToStr(fMain.Config.MaxBookStudent);
+   edtDelay.Text       := FloatToStr(fMain.Config.Delay);
   finally
    FreeAndNil(ControllerConfig);
   end;

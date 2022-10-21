@@ -143,7 +143,11 @@ begin
  EscondeSubMenus;
  if fMovimento = nil then
  begin
-   fMovimento := TfMovimento.Create(Self);
+   fMovimento                      := TfMovimento.Create(Self);
+   if User.Role = 2 then
+   begin
+     fMovimento.pnlFuncoes.Visible := False;
+   end;
    fMovimento.ShowModal;
    FreeAndNil(fMovimento);
  end;
@@ -176,6 +180,7 @@ end;
 
 procedure TfMain.btnMovimentoClick(Sender: TObject);
 begin
+ pnlSubMenuMovimento.Top      := btnMovimento.Top;
  pnlSubMenuMovimento.Visible  := not pnlSubMenuMovimento.Visible;
  pnlSubMenuCadastro.Visible   := False;
  pnlSubMenuConfig.Visible     := False;
@@ -204,6 +209,19 @@ begin
     fLogin := TfLogin.Create(Self);
     fLogin.ShowModal;
   end;
+
+  //operador
+  if User.role = 1 then
+   begin
+     btnUsuario.Visible   := False;
+   end;
+
+   //Aluno
+  if User.role = 2 then
+   begin
+     btnCadastros.Visible := False;
+     btnConfig.Visible    := False;
+   end;
 end;
 
 procedure TfMain.pnlAllMouseEnter(Sender: TObject);

@@ -13,6 +13,7 @@ type
     procedure Novo(mStudent: TStudent) overload;
     procedure Editar(mStudent: TStudent) overload;
     procedure LocalizarPorNome(Name : string; qryReturn : TFDQuery) overload;
+    procedure LocalizarPorId(id : Integer; mStudent: TStudent) overload;
   end;
 
 implementation
@@ -50,9 +51,9 @@ begin
       SQL.Add('       :BIRTHDATE,            ');
       SQL.Add('       :CLASS                 ');
       SQL.Add(');                            ');
-      ParamByName('NAME').AsString := mStudent.Name;
-      ParamByName('BIRTHDATE').AsDate := mStudent.BirthDate;
-      ParamByName('CLASS').AsString := mStudent.Class_;
+      ParamByName('NAME').AsString          := mStudent.Name;
+      ParamByName('BIRTHDATE').AsDate       := mStudent.BirthDate;
+      ParamByName('CLASS').AsString         := mStudent.Class_;
     end;
     try
       Query.ExecSQL;
@@ -100,11 +101,11 @@ begin
       SQL.Add('     CLASS = :CLASS,               ');
       SQL.Add('     ENABLED = :ENABLED            ');
       SQL.Add('     WHERE ID = :ID;               ');
-      ParamByName('ID').AsInteger := mStudent.Id;
-      ParamByName('NAME').AsString := mStudent.Name;
-      ParamByName('BIRTHDATE').AsDate := mStudent.BirthDate;
-      ParamByName('CLASS').AsString := mStudent.Class_;
-      ParamByName('ENABLED').AsBoolean := mStudent.Enabled;
+      ParamByName('ID').AsInteger           := mStudent.Id;
+      ParamByName('NAME').AsString          := mStudent.Name;
+      ParamByName('BIRTHDATE').AsDate       := mStudent.BirthDate;
+      ParamByName('CLASS').AsString         := mStudent.Class_;
+      ParamByName('ENABLED').AsBoolean      := mStudent.Enabled;
     end;
     try
       Query.ExecSQL;
@@ -149,6 +150,52 @@ begin
       on E: Exception do
       begin
         Erro := 'Falha ao gravar aluno ';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerStudend.LocalizarPorId(Id : Integer; mStudent: TStudent) overload;
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('     SELECT                            ');
+      SQL.Add('       *                               ');
+      SQL.Add('     FROM                              ');
+      SQL.Add('       STUDENT                         ');
+      SQL.Add('     WHERE                             ');
+      SQL.Add('     ID =:ID                           ');
+      Query.ParamByName('ID').AsInteger := Id;
+    end;
+    try
+      Query.Open;
+      if Query.RecordCount = 1 then
+      begin
+        mStudent.Id               := Query.FieldByName('ID').AsInteger;;
+        mStudent.Name             := Query.FieldByName('Name').AsString;
+        mStudent.BirthDate        := Query.FieldByName('BIRTHDATE').AsDateTime;
+        mStudent.Class_           := Query.FieldByName('CLASS').AsString;
+        mStudent.Enabled          := Query.FieldByName('ENABLED').AsBoolean;
+      end
+       else
+        begin
+          MessageDlg('Aluno não localizado!', mtWarning, [mbOK], 0, mbOK);
+        end;
+    except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao localizar aluno!';
         Erro := Erro + sLineBreak + E.Message;
         raise Exception.Create(Erro);
       end;

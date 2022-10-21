@@ -9,9 +9,10 @@ type
   private
 
   public
-
     procedure Novo(mLoan: TLoan) overload;
     procedure Editar(mLoan: TLoan) overload;
+    procedure Baixa(id:Integer) overload;
+    function Detalhes(id:Integer): string;
   end;
 
 implementation
@@ -31,15 +32,18 @@ begin
       SQL.Add(' INSERT INTO LOAN (           ');
       SQL.Add('     DATE,                    ');
       SQL.Add('     STUDENT_ID,              ');
-      SQL.Add('     BOOK_ID                  ');
+      SQL.Add('     BOOK_ID,                 ');
+      SQL.Add('     DATE_RETURN              ');
       SQL.Add('      ) VALUES (              ');
       SQL.Add('       :DATE,                 ');
       SQL.Add('       :STUDENT_ID,           ');
-      SQL.Add('       :BOOK_ID               ');
+      SQL.Add('       :BOOK_ID,              ');
+      SQL.Add('       :DATE_RETURN               ');
       SQL.Add(');                            ');
-      ParamByName('DATE').AsDate := mLoan.Date;
-      ParamByName('STUDENT_ID').AsInteger := mLoan.StudentId;
-      ParamByName('BOOK_ID').AsInteger := mLoan.BookId;
+      ParamByName('DATE').AsDate              := mLoan.Date;
+      ParamByName('STUDENT_ID').AsInteger     := mLoan.StudentId;
+      ParamByName('BOOK_ID').AsInteger        := mLoan.BookId;
+      ParamByName('DATE_RETURN').AsDate       := mLoan.DateReturn;
     end;
     try
       Query.ExecSQL;
@@ -75,14 +79,86 @@ begin
       SQL.Add('     STUDENT_ID = :STUDENT_ID,             ');
       SQL.Add('     BOOK_ID = :BOOK_ID           ');
       SQL.Add('     WHERE ID = :ID;               ');
-      ParamByName('ID').AsInteger := mLoan.Id;
-      ParamByName('DATE').AsDate := mLoan.Date;
-      ParamByName('STUDENT_ID').AsInteger := mLoan.StudentId;
-      ParamByName('BOOK_ID').AsInteger := mLoan.BookId;
+      ParamByName('ID').AsInteger               := mLoan.Id;
+      ParamByName('DATE').AsDate                := mLoan.Date;
+      ParamByName('STUDENT_ID').AsInteger       := mLoan.StudentId;
+      ParamByName('BOOK_ID').AsInteger          := mLoan.BookId;
     end;
     try
       Query.ExecSQL;
       MessageDlg('Editado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha ao editar emprestimo ';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerLoan.Baixa(Id:Integer);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  UPDATE LOAN                      ');
+      SQL.Add('     SET                           ');
+      SQL.Add('     RETURN = 1                 ');
+      SQL.Add('     WHERE ID = :ID;               ');
+      ParamByName('ID').AsInteger := Id;
+    end;
+    try
+      Query.ExecSQL;
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha ao editar emprestimo ';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+function TControllerLoan.Detalhes(id:Integer): string;
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  SELECT                                     ');
+      SQL.Add('     STUDENT.NAME,                           ');
+      SQL.Add('     LOAN.DATE_RETURN                        ');
+      SQL.Add('     FROM LOAN                               ');
+      SQL.Add('     INNER JOIN STUDENT                      ');
+      SQL.Add('     ON (LOAN.STUDENT_ID=STUDENT.ID)          ');
+      SQL.Add('     WHERE LOAN.BOOK_ID = :ID                    ');
+      SQL.Add('     AND LOAN.RETURN = 0                    ');
+      ParamByName('ID').AsInteger := Id;
+    end;
+    try
+      Query.Open();
+      Detalhes :=  'Data de Retorno: ' +Query.FieldByName('DATE_RETURN').AsString + #13+
+                   'Emprestado para: ' +Query.FieldByName('NAME').AsString;
     except
         on E: Exception do
         begin

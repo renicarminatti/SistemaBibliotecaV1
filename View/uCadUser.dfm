@@ -138,6 +138,7 @@ inherited fCadUser: TfCadUser
     ExplicitWidth = 854
     inherited lblEntity: TLabel
       Width = 130
+      Height = 25
       Caption = 'Cadastro de Usu'#225'rios'
       ExplicitWidth = 130
     end

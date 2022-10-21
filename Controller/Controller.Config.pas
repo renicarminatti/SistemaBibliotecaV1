@@ -37,9 +37,9 @@ begin
      Query.Open;
       if Query.RecordCount = 1 then
       begin
-        mConfig.Id := Query.FieldByName('ID').AsInteger;
-        mConfig.MaxBookStudent := Query.FieldByName('MAX_BOOK_STUDENT').AsInteger;
-        mConfig.Delay := Query.FieldByName('DELAY_FINE').AsFloat;
+        mConfig.Id                := Query.FieldByName('ID').AsInteger;
+        mConfig.MaxBookStudent    := Query.FieldByName('MAX_BOOK_STUDENT').AsInteger;
+        mConfig.Delay             := Query.FieldByName('DELAY_FINE').AsFloat;
       end
        else
         begin
@@ -82,9 +82,9 @@ begin
       SQL.Add('     MAX_BOOK_STUDENT = :MAX_BOOK_STUDENT,    ');
       SQL.Add('     DELAY_FINE = :DELAY_FINE                 ');
       SQL.Add('     WHERE ID = :ID;                          ');
-      ParamByName('ID').AsInteger := mConfig.Id;
+      ParamByName('ID').AsInteger               := mConfig.Id;
       ParamByName('MAX_BOOK_STUDENT').AsInteger := mConfig.MaxBookStudent;
-      ParamByName('DELAY_FINE').AsFloat := mConfig.Delay;
+      ParamByName('DELAY_FINE').AsFloat         := mConfig.Delay;
     end;
     try
       Query.ExecSQL;

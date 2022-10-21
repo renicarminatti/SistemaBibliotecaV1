@@ -1,0 +1,209 @@
+unit Controller.Student;
+
+interface
+
+uses Model.Student, uDM, SysUtils, Data.DB, FireDAC.Comp.Client, Vcl.Dialogs;
+
+type
+  TControllerStudend = class
+  private
+
+  public
+
+    procedure Novo(mStudent: TStudent) overload;
+    procedure Editar(mStudent: TStudent) overload;
+    procedure LocalizarPorNome(Name : string; qryReturn : TFDQuery) overload;
+    procedure LocalizarPorId(id : Integer; mStudent: TStudent) overload;
+  end;
+
+implementation
+
+
+procedure TControllerStudend.Novo( mStudent: TStudent);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    if Trim(mStudent.Name) = '' then
+    begin
+      MessageDlg('Campo nome é obrigatório!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    if Length(mStudent.Name) < 4 then
+    begin
+      MessageDlg('Nome deve ter no minimo 4 caractéres!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add(' INSERT INTO STUDENT (        ');
+      SQL.Add('     NAME,                    ');
+      SQL.Add('     BIRTHDATE,               ');
+      SQL.Add('     CLASS                    ');
+      SQL.Add('      ) VALUES (              ');
+      SQL.Add('       :NAME,                 ');
+      SQL.Add('       :BIRTHDATE,            ');
+      SQL.Add('       :CLASS                 ');
+      SQL.Add(');                            ');
+      ParamByName('NAME').AsString := mStudent.Name;
+      ParamByName('BIRTHDATE').AsDate := mStudent.BirthDate;
+      ParamByName('CLASS').AsString := mStudent.Class_;
+    end;
+    try
+      Query.ExecSQL;
+      MessageDlg('Gravado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+      except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao gravar aluno ';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerStudend.Editar( mStudent: TStudent);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    if Trim(mStudent.Name) = '' then
+    begin
+      MessageDlg('Campo nome é obrigatório!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    if Length(mStudent.Name) < 4 then
+    begin
+      MessageDlg('Nome deve ter no minimo 4 caractéres!', mtConfirmation, [mbOK], 0, mbOK);
+      Abort;
+    end;
+
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  UPDATE STUDENT                   ');
+      SQL.Add('     SET                           ');
+      SQL.Add('     NAME = :NAME,                 ');
+      SQL.Add('     BIRTHDATE = :BIRTHDATE,       ');
+      SQL.Add('     CLASS = :CLASS,               ');
+      SQL.Add('     ENABLED = :ENABLED            ');
+      SQL.Add('     WHERE ID = :ID;               ');
+      ParamByName('ID').AsInteger := mStudent.Id;
+      ParamByName('NAME').AsString := mStudent.Name;
+      ParamByName('BIRTHDATE').AsDate := mStudent.BirthDate;
+      ParamByName('CLASS').AsString := mStudent.Class_;
+      ParamByName('ENABLED').AsBoolean := mStudent.Enabled;
+    end;
+    try
+      Query.ExecSQL;
+      MessageDlg('Editado com sucesso!', mtConfirmation, [mbOK], 0, mbOK);
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha ao editar aluno ';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerStudend.LocalizarPorNome( Name : String; qryReturn : TFDQuery);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('     SELECT                            ');
+      SQL.Add('       ID,                             ');
+      SQL.Add('       NAME                            ');
+      SQL.Add('     FROM                              ');
+      SQL.Add('       STUDENT                         ');
+      SQL.Add('     WHERE                             ');
+      SQL.Add('     NAME LIKE :NAME');
+      Query.ParamByName('NAME').AsString := QuotedStr('%'+Name+'%');
+    end;
+    try
+      Query.Open;
+      qryReturn := Query;
+      except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao gravar aluno ';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerStudend.LocalizarPorId(Id : Integer; mStudent: TStudent) overload;
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('     SELECT                            ');
+      SQL.Add('       ID,                             ');
+      SQL.Add('       NAME                            ');
+      SQL.Add('     FROM                              ');
+      SQL.Add('       STUDENT                         ');
+      SQL.Add('     WHERE                             ');
+      SQL.Add('     ID =:ID');
+      Query.ParamByName('ID').AsInteger := Id;
+    end;
+    try
+      Query.Open;
+      if Query.RecordCount = 1 then
+      begin
+        mStudent.Id := Query.FieldByName('ID').AsInteger;;
+        mStudent.Name := Query.FieldByName('Name').AsString;
+        mStudent.BirthDate := Query.FieldByName('BIRTHDATE').AsDateTime;
+        mStudent.Class_ := Query.FieldByName('CLASS').AsString;
+        mStudent.Enabled := Query.FieldByName('AVAILABLE').AsBoolean;
+      end
+       else
+        begin
+          MessageDlg('Aluno não localizado!', mtWarning, [mbOK], 0, mbOK);
+        end;
+    except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao localizar aluno!';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+end.

@@ -191,6 +191,7 @@ object fConfig: TfConfig
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
+      OnKeyPress = edtMaxKeyPress
     end
     object edtDelay: TLabeledEdit
       Left = 16

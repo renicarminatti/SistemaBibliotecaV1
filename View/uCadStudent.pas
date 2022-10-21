@@ -28,6 +28,8 @@ type
     procedure btnNovoClick(Sender: TObject);
     procedure btEditarClick(Sender: TObject);
     procedure btnSalvarClick(Sender: TObject);
+    procedure dbgrdListaDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     { Private declarations }
     vAction : string;
@@ -45,19 +47,19 @@ implementation
 procedure TfCadStudent.btEditarClick(Sender: TObject);
 begin
   inherited;
-  vAction := 'EDITAR';
-  edtId.Text := qrylistId.AsString;
-  edtName.Text := qrylistNAME.AsString;
-  dtpBirthDate.date := qrylistBIRTHDATE.Value;
-  edtClass.Text := qrylistCLASS.AsString;
-  chkEnabled.Checked := qrylistENABLED.Value;
+  vAction               := 'EDITAR';
+  edtId.Text            := qrylistId.AsString;
+  edtName.Text          := qrylistNAME.AsString;
+  dtpBirthDate.date     := qrylistBIRTHDATE.Value;
+  edtClass.Text         := qrylistCLASS.AsString;
+  chkEnabled.Checked    := qrylistENABLED.Value;
 end;
 
 procedure TfCadStudent.btnNovoClick(Sender: TObject);
 begin
   inherited;
-  dtpBirthDate.Date := Now;
-  chkEnabled.Checked := True;
+  dtpBirthDate.Date     := Now;
+  chkEnabled.Checked    := True;
   edtId.Clear;
   edtName.Clear;
   edtClass.Clear;
@@ -75,18 +77,18 @@ begin
   try
     if vAction = 'NOVO' then
      begin
-       Student.Name := edtName.Text;
-       Student.BirthDate := dtpBirthDate.Date;
-       Student.Class_ := edtClass.Text;
+       Student.Name        := edtName.Text;
+       Student.BirthDate   := dtpBirthDate.Date;
+       Student.Class_      := edtClass.Text;
        ControllerStudent.Novo(Student);
      end;
     if vAction = 'EDITAR' then
      begin
-       Student.Id := qrylistId.Value;
-       Student.Name := edtName.Text;
-       Student.BirthDate := dtpBirthDate.Date;
-       Student.Class_ := edtClass.Text;
-       Student.Enabled := chkEnabled.Checked;
+       Student.Id          := qrylistId.Value;
+       Student.Name        := edtName.Text;
+       Student.BirthDate   := dtpBirthDate.Date;
+       Student.Class_      := edtClass.Text;
+       Student.Enabled     := chkEnabled.Checked;
        ControllerStudent.Editar(Student);
      end;
      qrylist.Refresh;
@@ -96,6 +98,15 @@ begin
     FreeAndNil(Student);
   end;
 
+end;
+
+procedure TfCadStudent.dbgrdListaDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  inherited;
+   If qrylistENABLED.Value = False then
+    dbgrdLista.Canvas.Font.Color:= clRed;
+     dbgrdLista.DefaultDrawDataCell(Rect, dbgrdLista.columns[datacol].field, State);
 end;
 
 end.

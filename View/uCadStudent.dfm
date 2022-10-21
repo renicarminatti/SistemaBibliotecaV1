@@ -6,9 +6,12 @@ inherited fCadStudent: TfCadStudent
     ExplicitWidth = 848
     ExplicitHeight = 546
     inherited tsLista: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
       ExplicitWidth = 840
       ExplicitHeight = 518
       inherited dbgrdLista: TDBGrid
+        OnDrawColumnCell = dbgrdListaDrawColumnCell
         Columns = <
           item
             Expanded = False
@@ -49,6 +52,10 @@ inherited fCadStudent: TfCadStudent
       end
     end
     inherited tsCad: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 840
+      ExplicitHeight = 518
       object lblPerfil: TLabel [0]
         Left = 16
         Top = 99

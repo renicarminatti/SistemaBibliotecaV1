@@ -12,6 +12,8 @@ type
 
     procedure Novo(mBook: TBook) overload;
     procedure Editar(mBook: TBook) overload;
+    procedure LocalizarPorId(Id : Integer; mBook: TBook) overload;
+    procedure SetAvailable(Value:Boolean; Id : Integer);
   end;
 
 implementation
@@ -51,10 +53,10 @@ begin
       SQL.Add('       :PUBLISHER,            ');
       SQL.Add('       :GENRE                 ');
       SQL.Add(');                            ');
-      ParamByName('NAME').AsString := mBook.Name;
-      ParamByName('AUTHOR').AsString := mBook.Author;
-      ParamByName('PUBLISHER').AsString := mBook.Publisher;
-      ParamByName('GENRE').AsString := mBook.Genre;
+      ParamByName('NAME').AsString         := mBook.Name;
+      ParamByName('AUTHOR').AsString       := mBook.Author;
+      ParamByName('PUBLISHER').AsString    := mBook.Publisher;
+      ParamByName('GENRE').AsString        := mBook.Genre;
     end;
     try
       Query.ExecSQL;
@@ -102,11 +104,11 @@ begin
       SQL.Add('     PUBLISHER = :PUBLISHER,       ');
       SQL.Add('     GENRE = :GENRE                ');
       SQL.Add('     WHERE ID = :ID;               ');
-      ParamByName('ID').AsInteger := mBook.Id;
-      ParamByName('NAME').AsString := mBook.Name;
-      ParamByName('AUTHOR').AsString := mBook.Author;
-      ParamByName('PUBLISHER').AsString := mBook.Publisher;
-      ParamByName('GENRE').AsString := mBook.Genre;
+      ParamByName('ID').AsInteger          := mBook.Id;
+      ParamByName('NAME').AsString         := mBook.Name;
+      ParamByName('AUTHOR').AsString       := mBook.Author;
+      ParamByName('PUBLISHER').AsString    := mBook.Publisher;
+      ParamByName('GENRE').AsString        := mBook.Genre;
     end;
     try
       Query.ExecSQL;
@@ -118,6 +120,88 @@ begin
           Erro := Erro + sLineBreak + E.Message;
           raise Exception.Create(Erro);
         end;
+    end;
+  finally
+    FreeAndNil(Query);
+  end;
+end;
+
+procedure TControllerBook.SetAvailable(Value:Boolean; Id : Integer);
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+   with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('  UPDATE BOOK                      ');
+      SQL.Add('     SET                           ');
+      SQL.Add('     AVAILABLE = :AVAILABLE                 ');
+      SQL.Add('     WHERE ID = :ID;               ');
+      ParamByName('ID').AsInteger := Id;
+      ParamByName('AVAILABLE').AsBoolean := Value;
+    end;
+
+    try
+      Query.ExecSQL;
+    except
+        on E: Exception do
+        begin
+          Erro := 'Falha SetAvailable!';
+          Erro := Erro + sLineBreak + E.Message;
+          raise Exception.Create(Erro);
+        end;
+    end;
+
+  finally
+    FreeAndNil(Query);
+  end;
+
+end;
+
+procedure TControllerBook.LocalizarPorId(Id : Integer; mBook: TBook) overload;
+var
+  Erro: string;
+  Query: TFDQuery;
+begin
+  Query := TFDQuery.Create(nil);
+  try
+    with Query do
+    begin
+      Connection := DM.con;
+      Close;
+      SQL.Add('     SELECT                            ');
+      SQL.Add('       *                               ');
+      SQL.Add('     FROM                              ');
+      SQL.Add('       BOOK                            ');
+      SQL.Add('     WHERE                             ');
+      SQL.Add('     ID =:ID                           ');
+      Query.ParamByName('ID').AsInteger := Id;
+    end;
+    try
+      Query.Open;
+      if Query.RecordCount = 1 then
+      begin
+        mBook.Id              := Query.FieldByName('ID').AsInteger;;
+        mBook.Name            := Query.FieldByName('Name').AsString;
+        mBook.Author          := Query.FieldByName('AUTHOR').AsString;
+        mBook.Publisher       := Query.FieldByName('PUBLISHER').AsString;
+        mBook.Available       := Query.FieldByName('AVAILABLE').AsBoolean;
+      end
+       else
+        begin
+          MessageDlg('Livro não localizado!', mtWarning, [mbOK], 0, mbOK);
+        end;
+    except
+      on E: Exception do
+      begin
+        Erro := 'Falha ao localizar Livro!';
+        Erro := Erro + sLineBreak + E.Message;
+        raise Exception.Create(Erro);
+      end;
     end;
   finally
     FreeAndNil(Query);

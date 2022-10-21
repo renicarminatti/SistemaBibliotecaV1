@@ -34,7 +34,6 @@ implementation
 
 procedure TDM.DataModuleCreate(Sender: TObject);
 begin
-
   con.Open();
 end;
 

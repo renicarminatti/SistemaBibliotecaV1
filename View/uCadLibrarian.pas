@@ -41,11 +41,11 @@ implementation
 procedure TfCadLibrarian.btEditarClick(Sender: TObject);
 begin
   inherited;
-  vAction := 'EDITAR';
-  edtId.Text := qrylistId.AsString;
-  edtName.Text := qrylistNAME.AsString;
-  edtDocument.Text := qrylistDOCUMENT.AsString;
-  edtAddress.Text := qrylistADDRESS.AsString;
+  vAction           := 'EDITAR';
+  edtId.Text        := qrylistId.AsString;
+  edtName.Text      := qrylistNAME.AsString;
+  edtDocument.Text  := qrylistDOCUMENT.AsString;
+  edtAddress.Text   := qrylistADDRESS.AsString;
 end;
 
 procedure TfCadLibrarian.btnNovoClick(Sender: TObject);
@@ -68,17 +68,17 @@ begin
   try
     if vAction = 'NOVO' then
      begin
-       Librarian.Name := edtName.Text;
-       Librarian.Document := edtDocument.Text;
-       Librarian.Address := edtAddress.Text;
+       Librarian.Name       := edtName.Text;
+       Librarian.Document   := edtDocument.Text;
+       Librarian.Address    := edtAddress.Text;
        ControllerLibrarian.Novo(Librarian);
      end;
     if vAction = 'EDITAR' then
      begin
-       Librarian.Id := qrylistId.Value;
-       Librarian.Name := edtName.Text;
-       Librarian.Document := edtDocument.Text;
-       Librarian.Address := edtAddress.Text;
+       Librarian.Id        := qrylistId.Value;
+       Librarian.Name      := edtName.Text;
+       Librarian.Document  := edtDocument.Text;
+       Librarian.Address   := edtAddress.Text;
        ControllerLibrarian.Editar(Librarian);
      end;
      qrylist.Refresh;
