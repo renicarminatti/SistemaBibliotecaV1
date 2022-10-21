@@ -9,7 +9,7 @@ uses
   Data.DB, FireDAC.Comp.Client, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
   FireDAC.Phys.IBBase, FireDAC.DApt, FireDAC.Phys.SQLite,
   FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, FireDAC.Comp.UI,
-  FireDAC.FMXUI.Wait;
+  FireDAC.FMXUI.Wait, Vcl.Dialogs;
 
 type
   TDM = class(TDataModule)
@@ -34,6 +34,7 @@ implementation
 
 procedure TDM.DataModuleCreate(Sender: TObject);
 begin
+  con.Params.Database := ExtractFilePath(ParamStr(0))+'DataDB\DB.db';
   con.Open();
 end;
 
